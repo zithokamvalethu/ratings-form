@@ -5,9 +5,17 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-     ratings: "*",
+     ratings: "",
       rate: [],
     };
+  }
+  starRatings(starNumberRating) {
+        var ratings = [];
+        for (var i = 0; i < starNumberRating; i++) {
+          ratings.push("*");
+        }
+
+        return ratings;
   }
   updateMessage(event) {
  
@@ -16,24 +24,27 @@ class App extends React.Component {
     });
   }
   handleClick(event) {
-   event.preventDefault();
-    var rate =this.state.rate;
-    rate.push(this.state.ratings);
+    event.preventDefault();
+    if (Number(this.state.ratings) > 10) {
+      return alert(
+      "Number should not be above 10"
+    )
+    }
     this.setState({
-      rate: rate,
-    });
-  
-    
+      ...this.state, rate: [...this.state.rate, this.starRatings(+this.state.ratings)]
+    })
+    this.setState({
+      ratings:""
+    })
+
   }
-
-
-
   renderRows() {
-    return this.state.rate.map(function (rating,ratingsNumber) {
+    return this.state.rate.map(function (rating,index) {
       return (
-        <tr key={"rate" + ratingsNumber}>
+        <tr key={index}>
           <td>
-            <input type="number" value={rating} />
+            {rating
+           }
           </td>
         </tr>
       );
@@ -44,10 +55,12 @@ class App extends React.Component {
 
     return (
       <div>
-        <label>rating</label>
-        <input type="number" onChange={this.updateMessage.bind(this)} />
+        <form onSubmit={this.handleClick.bind(this)}>
+          <label>rating</label>
+          <input type="number" onChange={this.updateMessage.bind(this)} />
 
-        <button onClick={this.handleClick.bind(this)}>submit rate</button>
+          <button type="submit">submit rate</button>
+        </form>
         <table className="table">
           <thead>
             <tr>
